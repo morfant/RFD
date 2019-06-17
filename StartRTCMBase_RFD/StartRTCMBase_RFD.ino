@@ -30,7 +30,7 @@
 SFE_UBLOX_GPS myGPS;
 
 const float SURVEY_TIME = 10; // sec
-const float SURVEY_ELLIPSOID = 1.0; // meter
+const float SURVEY_ELLIPSOID = 5.0; // meter
 
 void setup()
 {
@@ -47,6 +47,9 @@ void setup()
     while (1);
   }
 
+  // reset first
+  myGPS.factoryDefault(); //Return module to default settings (1Hz update, NMEA+UBX on all ports, etc)
+
   myGPS.setI2COutput(COM_TYPE_UBX); //Set the I2C port to output UBX only (turn off NMEA noise)
   myGPS.saveConfiguration(); //Save the current settings to flash and BBR
 
@@ -56,10 +59,19 @@ void setup()
 
   boolean response = true;
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1005, COM_PORT_I2C, 1); //Enable message 1005 to output through I2C port, message every second
+  
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1074, COM_PORT_I2C, 1);
+//  response &= myGPS.enableRTCMmessage(UBX_RTCM_1077, COM_PORT_I2C, 1);
+  
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1084, COM_PORT_I2C, 1);
+//  response &= myGPS.enableRTCMmessage(UBX_RTCM_1087, COM_PORT_I2C, 1);
+  
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1094, COM_PORT_I2C, 1);
+//  response &= myGPS.enableRTCMmessage(UBX_RTCM_1097, COM_PORT_I2C, 1);
+  
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1124, COM_PORT_I2C, 1);
+//  response &= myGPS.enableRTCMmessage(UBX_RTCM_1127, COM_PORT_I2C, 1);
+  
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1230, COM_PORT_I2C, 10); //Enable message every 10 seconds
 
   //Use COM_PORT_UART1 for the above six messages to direct RTCM messages out UART1
@@ -141,8 +153,8 @@ void setup()
 
   Serial.println("Base survey complete! RTCM now broadcasting.");
 
-//  myGPS.setI2COutput(COM_TYPE_UBX | COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
-  myGPS.setI2COutput(COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
+  myGPS.setI2COutput(COM_TYPE_UBX | COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
+//  myGPS.setI2COutput(COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
 }
 
 void loop()

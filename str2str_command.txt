@@ -24,3 +24,6 @@ ssh -i c:\Users\morfa\.ssh\aws-rtk-gps.pem ubuntu@ec2-18-223-255-151.us-east-2.c
 str2str -in ntripcli://guest:1234@localhost:9001/WELCOME#rtcm3 -out tcpsvr://localhost:30000#rtcm3 -msg "1005(1),1074(1),1084(1),1094(1),1124(1),1230(10)"
 
 str2str -in serial://ttyUSB0:115200:8:n:1:#rtcm3 -out tcpsvr://localhost:30000#rtcm3
+
+
+-msg "1005(1),1074(1),1084(1),1094(1),1124(1),1230(10)"
