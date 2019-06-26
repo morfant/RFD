@@ -29,14 +29,12 @@
 #include "SparkFun_Ublox_Arduino_Library.h" //http://librarymanager/All#SparkFun_Ublox_GPS
 SFE_UBLOX_GPS myGPS;
 
-const float SURVEY_TIME = 10; // sec
-const float SURVEY_ELLIPSOID = 10; // meter
 
 void setup()
 {
   Serial.begin(115200);
 //  while (!Serial); //Wait for user to open terminal
-  Serial.println("------- Ublox F9P Base station -------");
+  Serial.println("------- Ublox F9P Rover -------");
 
   Wire.begin();
   Wire.setClock(400000); //Increase I2C clock speed to 400kHz
@@ -88,73 +86,8 @@ void setup()
     while (1); //Freeze
   }
 
-  //Check if Survey is in Progress before initiating one
-  response = myGPS.getSurveyStatus(2000); //Query module for SVIN status with 2000ms timeout (request can take a long time)
-  if (response == false)
-  {
-    Serial.println("Failed to get Survey In status");
-    while (1); //Freeze
-  }
-
-  if (myGPS.svin.active == true)
-  {
-    Serial.print("Survey already in progress.");
-  }
-  else
-  {
-    //Start survey
-    //The ZED-F9P is slightly different than the NEO-M8P. See the Integration manual 3.5.8 for more info.
-    //response = myGPS.enableSurveyMode(300, 2.000); //Enable Survey in on NEO-M8P, 300 seconds, 2.0m
-    response = myGPS.enableSurveyMode(SURVEY_TIME, SURVEY_ELLIPSOID); //Enable Survey in, 60 seconds, 5.0m
-    if (response == false)
-    {
-      Serial.println("Survey start failed");
-      while (1);
-    }
-    Serial.print("Survey started. This will run until 60s has passed and less than ");
-    Serial.print(SURVEY_ELLIPSOID);
-    Serial.println("m accuracy is achieved.");
-
-  }
 
   while(Serial.available()) Serial.read(); //Clear buffer
-  
-  //Begin waiting for survey to complete
-  while (myGPS.svin.valid == false)
-  {
-    if(Serial.available())
-    {
-      byte incoming = Serial.read();
-      if(incoming == 'x')
-      {
-        //Stop survey mode
-        response = myGPS.disableSurveyMode(); //Disable survey
-        Serial.println("Survey stopped");
-        break;
-      }
-    }
-    
-    response = myGPS.getSurveyStatus(2000); //Query module for SVIN status with 2000ms timeout (req can take a long time)
-    if (response == true)
-    {
-      Serial.print("Press x to end survey - ");
-      Serial.print("Time elapsed: ");
-      Serial.print((String)myGPS.svin.observationTime);
-
-      Serial.print(" Accuracy: ");
-      Serial.print((String)myGPS.svin.meanAccuracy);
-      Serial.println();
-    }
-    else
-    {
-      Serial.println("SVIN request failed");
-    }
-
-    delay(1000);
-  }
-  Serial.println("Survey valid!");
-
-  Serial.println("Base survey complete! RTCM now broadcasting.");
 
   myGPS.setI2COutput(COM_TYPE_UBX | COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
 //  myGPS.setI2COutput(COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
