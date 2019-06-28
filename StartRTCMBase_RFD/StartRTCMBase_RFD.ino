@@ -30,7 +30,7 @@
 SFE_UBLOX_GPS myGPS;
 
 const float SURVEY_TIME = 10; // sec
-const float SURVEY_ELLIPSOID = 10; // meter
+const float SURVEY_ELLIPSOID = 30; // meter
 
 void setup()
 {
@@ -156,8 +156,8 @@ void setup()
 
   Serial.println("Base survey complete! RTCM now broadcasting.");
 
-  myGPS.setI2COutput(COM_TYPE_UBX | COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
-//  myGPS.setI2COutput(COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
+//  myGPS.setI2COutput(COM_TYPE_UBX | COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
+  myGPS.setI2COutput(COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
 }
 
 void loop()

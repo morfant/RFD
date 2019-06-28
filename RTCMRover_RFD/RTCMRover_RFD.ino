@@ -56,6 +56,7 @@ void setup()
 //  while (Serial.available() == 0) ; //Wait for user to press a key
 
   boolean response = true;
+  
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1005, COM_PORT_I2C, 1); //Enable message 1005 to output through I2C port, message every second
   
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1074, COM_PORT_I2C, 1);
@@ -65,10 +66,8 @@ void setup()
 //  response &= myGPS.enableRTCMmessage(UBX_RTCM_1087, COM_PORT_I2C, 1);
   
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1094, COM_PORT_I2C, 1);
-//  response &= myGPS.enableRTCMmessage(UBX_RTCM_1097, COM_PORT_I2C, 1);
   
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1124, COM_PORT_I2C, 1);
-//  response &= myGPS.enableRTCMmessage(UBX_RTCM_1127, COM_PORT_I2C, 1);
   
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1230, COM_PORT_I2C, 10); //Enable message every 10 seconds
 
@@ -89,8 +88,10 @@ void setup()
 
   while(Serial.available()) Serial.read(); //Clear buffer
 
-  myGPS.setI2COutput(COM_TYPE_UBX | COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
+//  myGPS.setI2COutput(COM_TYPE_UBX | COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
 //  myGPS.setI2COutput(COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
+  myGPS.setI2COutput(COM_TYPE_RTCM3 | COM_TYPE_NMEA); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
+
 }
 
 void loop()
@@ -104,6 +105,19 @@ void loop()
 //As each RTCM byte comes in you can specify what to do with it
 //Useful for passing the RTCM correction data to a radio, Ntrip broadcaster, etc.
 void SFE_UBLOX_GPS::processRTCM(uint8_t incoming)
+{
+  //Let's just pretty-print the HEX values for now
+//  if (myGPS.rtcmFrameCounter % 16 == 0) Serial.println();
+//  Serial.print(" ");
+//  if (incoming < 0x10) Serial.print("0");
+//  Serial.print(incoming, HEX);
+//
+
+  Serial.write(incoming);
+  
+}
+
+void SFE_UBLOX_GPS::processNMEA(char incoming)
 {
   //Let's just pretty-print the HEX values for now
 //  if (myGPS.rtcmFrameCounter % 16 == 0) Serial.println();
