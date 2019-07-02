@@ -32,7 +32,7 @@ SFE_UBLOX_GPS myGPS;
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(230400);
 //  while (!Serial); //Wait for user to open terminal
   Serial.println("------- Ublox F9P Rover -------");
 
@@ -49,6 +49,7 @@ void setup()
   myGPS.factoryDefault(); //Return module to default settings (1Hz update, NMEA+UBX on all ports, etc)
 
   myGPS.setI2COutput(COM_TYPE_UBX); //Set the I2C port to output UBX only (turn off NMEA noise)
+  myGPS.setNavigationFrequency(30); //Set output to 10 times a second
   myGPS.saveConfiguration(); //Save the current settings to flash and BBR
 
   while (Serial.available()) Serial.read(); //Clear any latent chars in serial buffer
