@@ -40,6 +40,7 @@ void setup()
 
   Wire.begin();
   Wire.setClock(400000); //Increase I2C clock speed to 400kHz
+//  Wire.setClock(1000000); //Increase I2C clock speed to 1MHz
 
   if (myGPS.begin() == false) //Connect to the Ublox module using Wire port
   {
@@ -51,7 +52,7 @@ void setup()
   myGPS.factoryDefault(); //Return module to default settings (1Hz update, NMEA+UBX on all ports, etc)
 
   myGPS.setI2COutput(COM_TYPE_UBX); //Set the I2C port to output UBX only (turn off NMEA noise)
-  myGPS.setNavigationFrequency(30); //Set output to 10 times a second
+  myGPS.setNavigationFrequency(2); //Set output to 10 times a second
   myGPS.saveConfiguration(); //Save the current settings to flash and BBR
 
   while (Serial.available()) Serial.read(); //Clear any latent chars in serial buffer
@@ -160,7 +161,7 @@ void setup()
 //  myGPS.setI2COutput(COM_TYPE_UBX | COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
   myGPS.setI2COutput(COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
 }
-
+  
 void loop()
 {
   myGPS.checkUblox(); //See if new data is available. Process bytes as they come in.
