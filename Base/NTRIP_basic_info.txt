@@ -1,0 +1,4 @@
+host: gnssdata.or.kr
+port: 2101
+user: gnss
+pw: gnss
