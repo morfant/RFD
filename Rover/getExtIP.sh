@@ -1,0 +1,2 @@
+curl bot.whatismyipaddress.com
+
