@@ -1,4 +1,4 @@
-filename=log_`date +%Y%m%d_%X`.log;
+filename=log_extIp_`date +%Y%m%d_%X`.log;
 while true;
 do echo "           "
 date +%X >> $filename; 
