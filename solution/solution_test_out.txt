@@ -1,0 +1,3 @@
+% (lat/lon/height=WGS84/ellipsoidal,Q=1:fix,2:float,3:sbas,4:dgps,5:single,6:ppp,ns=# of satellites)
+%  GPST                  latitude(deg) longitude(deg)  height(m)   Q  ns   sdn(m)   sde(m)   sdu(m)  sdne(m)  sdeu(m)  sdun(m) age(s)  ratio
+2019/07/12 02:59:19.000   37.606647288  126.908477229    90.1946   2   7   5.4511   3.8865  12.0508   1.4199   1.9941  -6.0775   1.00    0.0
