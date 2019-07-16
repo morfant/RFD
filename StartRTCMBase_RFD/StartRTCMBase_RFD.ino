@@ -30,7 +30,7 @@
 SFE_UBLOX_GPS myGPS;
 
 const float SURVEY_TIME = 10; // sec
-const float SURVEY_ELLIPSOID = 1.0; // meter
+const float SURVEY_ELLIPSOID = 10.0; // meter
 
 void setup()
 {
