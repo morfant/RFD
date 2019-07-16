@@ -30,16 +30,17 @@
 SFE_UBLOX_GPS myGPS;
 
 const float SURVEY_TIME = 10; // sec
-const float SURVEY_ELLIPSOID = 10.0; // meter
+const float SURVEY_ELLIPSOID = 5; // meter
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(230400);
 //  while (!Serial); //Wait for user to open terminal
   Serial.println("------- Ublox F9P Base station -------");
 
   Wire.begin();
   Wire.setClock(400000); //Increase I2C clock speed to 400kHz
+//  Wire.setClock(1000000); //Increase I2C clock speed to 1MHz
 
   if (myGPS.begin() == false) //Connect to the Ublox module using Wire port
   {
@@ -47,7 +48,11 @@ void setup()
     while (1);
   }
 
+  // reset first
+  myGPS.factoryDefault(); //Return module to default settings (1Hz update, NMEA+UBX on all ports, etc)
+
   myGPS.setI2COutput(COM_TYPE_UBX); //Set the I2C port to output UBX only (turn off NMEA noise)
+  myGPS.setNavigationFrequency(2); //Set output to 10 times a second
   myGPS.saveConfiguration(); //Save the current settings to flash and BBR
 
   while (Serial.available()) Serial.read(); //Clear any latent chars in serial buffer
@@ -56,10 +61,19 @@ void setup()
 
   boolean response = true;
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1005, COM_PORT_I2C, 1); //Enable message 1005 to output through I2C port, message every second
+  
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1074, COM_PORT_I2C, 1);
+//  response &= myGPS.enableRTCMmessage(UBX_RTCM_1077, COM_PORT_I2C, 1);
+  
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1084, COM_PORT_I2C, 1);
+//  response &= myGPS.enableRTCMmessage(UBX_RTCM_1087, COM_PORT_I2C, 1);
+  
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1094, COM_PORT_I2C, 1);
+//  response &= myGPS.enableRTCMmessage(UBX_RTCM_1097, COM_PORT_I2C, 1);
+  
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1124, COM_PORT_I2C, 1);
+//  response &= myGPS.enableRTCMmessage(UBX_RTCM_1127, COM_PORT_I2C, 1);
+  
   response &= myGPS.enableRTCMmessage(UBX_RTCM_1230, COM_PORT_I2C, 10); //Enable message every 10 seconds
 
   //Use COM_PORT_UART1 for the above six messages to direct RTCM messages out UART1
@@ -99,7 +113,10 @@ void setup()
       Serial.println("Survey start failed");
       while (1);
     }
-    Serial.println("Survey started. This will run until 60s has passed and less than 5m accuracy is achieved.");
+    Serial.print("Survey started. This will run until 60s has passed and less than ");
+    Serial.print(SURVEY_ELLIPSOID);
+    Serial.println("m accuracy is achieved.");
+
   }
 
   while(Serial.available()) Serial.read(); //Clear buffer
@@ -144,7 +161,7 @@ void setup()
 //  myGPS.setI2COutput(COM_TYPE_UBX | COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
   myGPS.setI2COutput(COM_TYPE_RTCM3); //Set the I2C port to output UBX and RTCM sentences (not really an option, turns on NMEA as well)
 }
-
+  
 void loop()
 {
   myGPS.checkUblox(); //See if new data is available. Process bytes as they come in.
