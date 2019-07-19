@@ -1,0 +1,2 @@
+getRTCM.sh &
+decodeRTCM.sh
