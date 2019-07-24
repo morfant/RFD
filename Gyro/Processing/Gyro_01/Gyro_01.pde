@@ -101,7 +101,7 @@ void serialEvent(Serial myPort) {
     //println(input);
    numbers = splitTokens(input, " ");
    
-   if(numbers.length == 3) {
+   if(numbers.length == 6) {
    values[0] = float(numbers[0]);
    values[1] = float(numbers[1]);
    values[2] = float(numbers[2]);
