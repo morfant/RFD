@@ -211,6 +211,19 @@ void loop()
 
     myIMU.readMagData(myIMU.magCount);  // Read the x/y/z adc values
 
+    // use calculated data
+    if (!magCal) {
+
+      myIMU.magScale[0] = 1.00;
+      myIMU.magScale[1] = 0.99;
+      myIMU.magScale[2] = 1.01;
+
+      myIMU.magBias[0] = +252.18 * myIMU.magScale[0];  // User environmental x-axis correction in milliGauss, should be automatically calculated
+      myIMU.magBias[1] = +23.07 * myIMU.magScale[1];  // User environmental x-axis correction in milliGauss
+      myIMU.magBias[2] = -326.12 * myIMU.magScale[2];  // User environmental x-axis correction in milliGauss
+    }
+
+
     // Calculate the magnetometer values in milliGauss
     // Include factory calibration per data sheet and user environmental
     // corrections
@@ -237,6 +250,12 @@ void loop()
   MahonyQuaternionUpdate(myIMU.ax, myIMU.ay, myIMU.az, myIMU.gx * DEG_TO_RAD,
                          myIMU.gy * DEG_TO_RAD, myIMU.gz * DEG_TO_RAD, myIMU.my,
                          myIMU.mx, myIMU.mz, myIMU.deltat);
+
+
+  //  MadgwickQuaternionUpdate(myIMU.ax, myIMU.ay, myIMU.az, myIMU.gx * DEG_TO_RAD,
+  //                         myIMU.gy * DEG_TO_RAD, myIMU.gz * DEG_TO_RAD, myIMU.my,
+  //                         myIMU.mx, myIMU.mz, myIMU.deltat);
+
 
   if (!AHRS)
   {
@@ -346,12 +365,12 @@ void loop()
       // Declination of SparkFun Electronics (40°05'26.6"N 105°11'05.9"W) is
       // 	8° 30' E  ± 0° 21' (or 8.5°) on 2016-07-19
       // - http://www.ngdc.noaa.gov/geomag-web/#declination
-//      myIMU.yaw  += 8.99;
+      myIMU.yaw  += 8.99;
       myIMU.roll *= RAD_TO_DEG;
 
       if (SerialDebug)
       {
-     //    Serial.print("Yaw, Pitch, Roll: ");
+        //    Serial.print("Yaw, Pitch, Roll: ");
         Serial.print(myIMU.yaw, 2);
         Serial.print(" ");
         Serial.print(myIMU.pitch, 2);

@@ -134,6 +134,11 @@ void serialEvent(Serial myPort) {
   //}
 }
 
+void keyPressed() {
+  if (key == 32) {
+    background(0);
+  }
+}
 
 
 void oscEvent(OscMessage theOscMessage) {

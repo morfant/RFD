@@ -131,11 +131,13 @@ void serialEvent(Serial myPort) {
       values[4] = float(numbers[4]);
       values[5] = float(numbers[5]);
 
-      println("yaw: " + values[0]);
-      println("pitch: " + values[1]);
-      println("roll: " + values[2]);
+      //println("yaw: " + values[0]);
+      //println("pitch: " + values[1]);
+      //println("roll: " + values[2]);
 
       sendOSC(values[3], values[4], values[5]);
+    } else {
+      println(input);
     }
   }
 }
