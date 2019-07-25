@@ -1,0 +1,1 @@
+python ~/RFD/Common/read.py "/dev/ttyACM1"
