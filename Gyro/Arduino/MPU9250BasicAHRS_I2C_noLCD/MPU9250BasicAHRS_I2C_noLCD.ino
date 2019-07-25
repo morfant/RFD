@@ -24,8 +24,8 @@
   GND ---------------------- GND
 */
 
-#include "quaternionFilters.h"
-#include "MPU9250.h"
+#include "src/quaternionFilters.h"
+#include "src/MPU9250.h"
 
 #define AHRS true // Set to false for basic data read
 #define SerialDebug true  // Set to true to get Serial output for debugging
