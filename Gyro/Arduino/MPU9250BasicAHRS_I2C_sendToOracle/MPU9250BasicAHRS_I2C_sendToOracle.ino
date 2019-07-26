@@ -390,41 +390,46 @@ void loop()
 
       if (SerialSending)
       {
+        // float r[] = {myIMU.mx, myIMU.my, myIMU.mz, myIMU.ax, myIMU.ay, myIMU.az, myIMU.gx, myIMU.gy, myIMU.gz, myIMU.yaw, myIMU.pitch, myIMU.roll};
+
+        // Serial.println(r);
+
         // mag
-        Serial.print("mag");
+        Serial.print("s");
         Serial.print(" ");
         Serial.print(myIMU.mx, 3);
         Serial.print(" ");
         Serial.print(myIMU.my, 3);
         Serial.print(" ");
-        Serial.println(myIMU.mz, 3);
+        Serial.print(myIMU.mz, 3);
 
         // acc
-        Serial.print("acc");
         Serial.print(" ");
         Serial.print(myIMU.ax, 3);
         Serial.print(" ");
         Serial.print(myIMU.ay, 3);
         Serial.print(" ");
-        Serial.println(myIMU.az, 3);
+        Serial.print(myIMU.az, 3);
 
         // gyro
-        Serial.print("gyro");
         Serial.print(" ");
         Serial.print(myIMU.gx, 3);
         Serial.print(" ");
         Serial.print(myIMU.gy, 3);
         Serial.print(" ");
-        Serial.println(myIMU.gz, 3);
+        Serial.print(myIMU.gz, 3);
 
         //    Serial.print("Yaw, Pitch, Roll: ");
-        Serial.print("ypr");
         Serial.print(" ");
         Serial.print(myIMU.yaw, 3);
         Serial.print(" ");
         Serial.print(myIMU.pitch, 3);
         Serial.print(" ");
-        Serial.println(myIMU.roll, 3);
+        Serial.print(myIMU.roll, 3);
+        Serial.print(" ");
+        Serial.print("e");
+        Serial.println(" ");
+
       }
 
 

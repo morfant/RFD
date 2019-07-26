@@ -1,3 +1,23 @@
+########################################################################
+#
+# Copyright (c) 2017, STEREOLABS.
+#
+# All rights reserved.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+########################################################################
+
 import serial
 import time
 
@@ -7,10 +27,10 @@ import sys
 
 def main():
     if len(sys.argv) < 3:
+        print("Use default setting. 132.145.113.171:9900")
+        # HOST = "132.145.113.171"
         HOST = "121.162.9.196"
         PORT = 9901
-        print("Use default setting. {0}:{1}".format(HOST, PORT))
-        # HOST = "132.145.113.171"
     else:
         HOST = sys.argv[1]
         PORT = int(sys.argv[2])
@@ -28,7 +48,6 @@ def main():
 
     print("Connected to remote host. Start sending messages")
 
-    i = 0
 
     # serial
     ser = serial.Serial('/dev/cu.usbmodem14601', 38400) 
@@ -44,19 +63,14 @@ def main():
    
         # Get sensor values from arduino
         b = ser.readline()
-        # print("1 - ")
-        # print(b)
+        print(b)
         string_b = b.decode()
-        # print("2 - ")
         # print(string_b)
         string = string_b.rstrip()
-        # print("3 - ")
         # print(string)
 
         v = string.split(' ')
-        # print("4 - ")
-        # print(v)
-        if len(v) == 14 and v[0] == 's' and v[-1] == 'e':
+        if len(v) == 13 and v[0] == 's':
             m_values[0] = float(v[1])
             m_values[1] = float(v[2])
             m_values[2] = float(v[3])
@@ -108,30 +122,10 @@ def main():
             ypr = "{0},{1},{2}".format(y, p, r)
 
             msg = "{0},{1},{2},{3},{4}".format(time_stamp, mag, acc, gyro, ypr) # yrp = yaw, pitch, roll
-            # print("5 - ")
+    #        MASTER_SOCK.sendall(msg.encode())
             print(msg.encode())
 
-            try:
-                # print("send..")
-                MASTER_SOCK.sendall(msg.encode())
-            except socket.error:
-                # print(socket.error)
-            finally:
-                MASTER_SOCK.close()
-
-            # i = i + 1
-            # print(i)
-
-        else:
-            if len(v) != 14:
-                print("len is not 14")
-                continue
-            elif v[0] != 's':
-                print("start byte is not \'s\'!!")
-                continue
-            elif v[-1] != 'e':
-                print("end byte is not \'e\'!!")
-                continue
+            # time.sleep(0.01)
 
 
 
