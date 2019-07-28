@@ -511,7 +511,7 @@ void MPU9250::MPU9250SelfTest(float * destination)
   int32_t gAvg[3] = {0}, aAvg[3] = {0}, aSTAvg[3] = {0}, gSTAvg[3] = {0};
   float factoryTrim[6];
   uint8_t FS = GFS_250DPS;
-   
+
   writeByte(_I2Caddr, SMPLRT_DIV, 0x00);    // Set gyro sample rate to 1 kHz
   writeByte(_I2Caddr, CONFIG, 0x02);        // Set gyro sample rate to 1 kHz and DLPF to 92 Hz
   writeByte(_I2Caddr, GYRO_CONFIG, FS<<3);  // Set full scale range for the gyro to 250 dps
@@ -519,16 +519,16 @@ void MPU9250::MPU9250SelfTest(float * destination)
   writeByte(_I2Caddr, ACCEL_CONFIG, FS<<3); // Set full scale range for the accelerometer to 2 g
 
   for( int ii = 0; ii < 200; ii++) {  // get average current values of gyro and acclerometer
-  
+
     readBytes(_I2Caddr, ACCEL_XOUT_H, 6, &rawData[0]);        // Read the six raw data registers into data array
     aAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ;  // Turn the MSB and LSB into a signed 16-bit value
-    aAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;  
-    aAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ; 
-  
+    aAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
+    aAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
+
     readBytes(_I2Caddr, GYRO_XOUT_H, 6, &rawData[0]);       // Read the six raw data registers sequentially into data array
     gAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ;  // Turn the MSB and LSB into a signed 16-bit value
-    gAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;  
-    gAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ; 
+    gAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
+    gAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
   }
 
   // Get average of 200 values and store as average current readings
@@ -657,6 +657,12 @@ void MPU9250::magCalMPU9250(float * bias_dest, float * scale_dest, int _sampleCo
   {
     readMagData(mag_temp);  // Read the mag data
 
+		Serial.print(mag_temp[0]);
+		Serial.print(" ");
+		Serial.print(mag_temp[1]);
+		Serial.print(" ");
+		Serial.println(mag_temp[2]);
+
     for (int jj = 0; jj < 3; jj++)
     {
       if (mag_temp[jj] > mag_max[jj])
@@ -777,7 +783,7 @@ uint8_t MPU9250::readByte(uint8_t deviceAddress, uint8_t registerAddress)
     else
     {
       return readByteSPI(registerAddress);
-    } 
+    }
   }
   else
   {
@@ -799,17 +805,17 @@ uint8_t MPU9250::readMagByteSPI(uint8_t registerAddress)
   uint32_t count = 0;
   while(((I2C_MASTER_STATUS & 0b01000000) == 0) && (count++ < 100000))            // Checks against the I2C_SLV4_DONE bit in the I2C master status register
   {
-    I2C_MASTER_STATUS = readByteSPI(54);  
+    I2C_MASTER_STATUS = readByteSPI(54);
   }
   if(count > 10000)
   {
     Serial.println(F("Timed out"));
   }
-  
-  
 
 
-  return readByteSPI(53);   // Read the data that is in the SLV4_DI register 
+
+
+  return readByteSPI(53);   // Read the data that is in the SLV4_DI register
 }
 
 uint8_t MPU9250::writeMagByteSPI(uint8_t registerAddress, uint8_t data)
@@ -825,7 +831,7 @@ uint8_t MPU9250::writeMagByteSPI(uint8_t registerAddress, uint8_t data)
   uint32_t count = 0;
   while(((I2C_MASTER_STATUS & 0b01000000) == 0) && (count++ < 10000))            // Checks against the I2C_SLV4_DONE bit in the I2C master status register
   {
-    I2C_MASTER_STATUS = readByteSPI(54);  
+    I2C_MASTER_STATUS = readByteSPI(54);
   }
   if(count > 10000)
   {

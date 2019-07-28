@@ -29,8 +29,9 @@
 
 #define AHRS true // Set to false for basic data read
 #define SerialDebug false// Set to true to get Serial output for debugging
-#define magCal false 
+#define magCal false
 #define SerialSending true  // Set to true to get Serial output for debugging
+#define SampleCount 480
 
 // Pin definitions
 int intPin = 12;  // These can be changed, 2 and 3 are the Arduinos ext int pins
@@ -165,7 +166,7 @@ void setup()
       // magnetometer calibration with sampleCount for getting mag min/max
       // The next call delays for 4 seconds, and then records about 15 seconds of
       // data to calculate bias and scale.
-      myIMU.magCalMPU9250(myIMU.magBias, myIMU.magScale, 1000);
+      myIMU.magCalMPU9250(myIMU.magBias, myIMU.magScale, SampleCount);
     }
 
     if (SerialDebug)
@@ -234,13 +235,13 @@ void loop()
     // use calculated data
     if (!magCal) {
 
-      myIMU.magScale[0] = 1.00;
-      myIMU.magScale[1] = 0.99;
-      myIMU.magScale[2] = 1.01;
-
-      myIMU.magBias[0] = +252.18 * myIMU.magScale[0];  // User environmental x-axis correction in milliGauss, should be automatically calculated
-      myIMU.magBias[1] = +23.07 * myIMU.magScale[1];  // User environmental x-axis correction in milliGauss
-      myIMU.magBias[2] = -326.12 * myIMU.magScale[2];  // User environmental x-axis correction in milliGauss
+//      myIMU.magScale[0] = 1.00;
+//      myIMU.magScale[1] = 0.99;
+//      myIMU.magScale[2] = 1.01;
+//
+//      myIMU.magBias[0] = +252.18 * myIMU.magScale[0];  // User environmental x-axis correction in milliGauss, should be automatically calculated
+//      myIMU.magBias[1] = +23.07 * myIMU.magScale[1];  // User environmental x-axis correction in milliGauss
+//      myIMU.magBias[2] = -326.12 * myIMU.magScale[2];  // User environmental x-axis correction in milliGauss
 
 
       // myIMU.magScale[0] = 1.07;
@@ -251,6 +252,14 @@ void loop()
       // myIMU.magBias[1] = -55.01 * myIMU.magScale[1];  // User environmental x-axis correction in milliGauss
       // myIMU.magBias[2] = -373.68 * myIMU.magScale[2];  // User environmental x-axis correction in milliGauss
 
+
+      myIMU.magScale[0] = 1.00;
+      myIMU.magScale[1] = 1.00;
+      myIMU.magScale[2] = 1.00;
+
+      myIMU.magBias[0] = 316.97 * myIMU.magScale[0];  // User environmental x-axis correction in milliGauss, should be automatically calculated
+      myIMU.magBias[1] = +24.85 * myIMU.magScale[1];  // User environmental x-axis correction in milliGauss
+      myIMU.magBias[2] = -276.86 * myIMU.magScale[2];  // User environmental x-axis correction in milliGauss
 
 
 
@@ -440,6 +449,18 @@ void loop()
         Serial.print(" ");
         Serial.print(myIMU.roll, 3);
         Serial.print(" ");
+
+
+        Serial.print(* getQ(), 3);
+        Serial.print(" ");
+        Serial.print(* getQ() + 1, 3);
+        Serial.print(" ");
+        Serial.print(* getQ() + 2, 3);
+        Serial.print(" ");
+        Serial.print(* getQ() + 3, 3);
+        Serial.print(" ");
+
+
         Serial.print("e");
         Serial.println(" ");
 
