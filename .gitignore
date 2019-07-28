@@ -1,3 +1,4 @@
 *.nav
 /solution
 /Rover/solution/solution_test_out.txt
+/Gyro/mag_cali_data

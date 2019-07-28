@@ -1,1 +1,1 @@
-python ~/RFD/Common/read.py
+python ~/RFD/Common/read.py "/dev/ttyACM0"
