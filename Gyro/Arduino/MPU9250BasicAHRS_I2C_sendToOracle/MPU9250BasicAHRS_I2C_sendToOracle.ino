@@ -28,7 +28,8 @@
 #include "src/MPU9250.h"
 
 #define AHRS true // Set to false for basic data read
-#define SerialDebug false  // Set to true to get Serial output for debugging
+#define SerialDebug false// Set to true to get Serial output for debugging
+#define magCal false 
 #define SerialSending true  // Set to true to get Serial output for debugging
 
 // Pin definitions
@@ -37,7 +38,6 @@ int myLed  = 13;  // Set up pin 13 led for toggling
 
 // custom
 int interval = 10;
-boolean magCal = false;
 
 #define I2Cclock 400000
 #define I2Cport Wire
@@ -162,10 +162,10 @@ void setup()
     myIMU.getMres();
 
     if (magCal) {
-      // magnetometer calibration
+      // magnetometer calibration with sampleCount for getting mag min/max
       // The next call delays for 4 seconds, and then records about 15 seconds of
       // data to calculate bias and scale.
-      myIMU.magCalMPU9250(myIMU.magBias, myIMU.magScale);
+      myIMU.magCalMPU9250(myIMU.magBias, myIMU.magScale, 1000);
     }
 
     if (SerialDebug)
@@ -241,6 +241,19 @@ void loop()
       myIMU.magBias[0] = +252.18 * myIMU.magScale[0];  // User environmental x-axis correction in milliGauss, should be automatically calculated
       myIMU.magBias[1] = +23.07 * myIMU.magScale[1];  // User environmental x-axis correction in milliGauss
       myIMU.magBias[2] = -326.12 * myIMU.magScale[2];  // User environmental x-axis correction in milliGauss
+
+
+      // myIMU.magScale[0] = 1.07;
+      // myIMU.magScale[1] = 0.99;
+      // myIMU.magScale[2] = 0.94;
+
+      // myIMU.magBias[0] = +315.22 * myIMU.magScale[0];  // User environmental x-axis correction in milliGauss, should be automatically calculated
+      // myIMU.magBias[1] = -55.01 * myIMU.magScale[1];  // User environmental x-axis correction in milliGauss
+      // myIMU.magBias[2] = -373.68 * myIMU.magScale[2];  // User environmental x-axis correction in milliGauss
+
+
+
+
     }
 
 

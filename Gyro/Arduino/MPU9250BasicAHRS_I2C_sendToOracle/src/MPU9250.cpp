@@ -619,7 +619,7 @@ void MPU9250::MPU9250SelfTest(float * destination)
 
 // Function which accumulates magnetometer data after device initialization.
 // It calculates the bias and scale in the x, y, and z axes.
-void MPU9250::magCalMPU9250(float * bias_dest, float * scale_dest)
+void MPU9250::magCalMPU9250(float * bias_dest, float * scale_dest, int _sampleCount)
 {
   uint16_t ii = 0, sample_count = 0;
   int32_t mag_bias[3]  = {0, 0, 0},
@@ -640,7 +640,8 @@ void MPU9250::magCalMPU9250(float * bias_dest, float * scale_dest)
   // at 8 Hz ODR, new mag data is available every 125 ms
   if (Mmode == M_8HZ)
   {
-    sample_count = 2400; // 2400 = 5min
+    // sample_count = 2400; // 2400 = 5min
+    sample_count = _sampleCount; // 8 / sec
     Serial.print("Calibration for ");
     Serial.print(sample_count / 8);
     Serial.println(" seconds ..");

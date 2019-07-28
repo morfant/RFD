@@ -294,7 +294,7 @@ public:
     void initMPU9250();
     void calibrateMPU9250(float * gyroBias, float * accelBias);
     void MPU9250SelfTest(float * destination);
-    void magCalMPU9250(float * dest1, float * dest2);
+    void magCalMPU9250(float * dest1, float * dest2, int _sampleCount);
     uint8_t writeByte(uint8_t, uint8_t, uint8_t);
     uint8_t readByte(uint8_t, uint8_t);
     uint8_t readBytes(uint8_t, uint8_t, uint8_t, uint8_t *);

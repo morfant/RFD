@@ -114,13 +114,14 @@ def main():
             try:
                 # print("send..")
                 MASTER_SOCK.sendall(msg.encode())
-            except socket.error:
+            except socket.error as msg:
                 # print(socket.error)
+                print(msg)
             finally:
                 MASTER_SOCK.close()
 
-            # i = i + 1
-            # print(i)
+            i = i + 1
+            print(i)
 
         else:
             if len(v) != 14:

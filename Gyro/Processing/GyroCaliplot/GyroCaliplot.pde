@@ -27,7 +27,7 @@ void setup()
   smooth(4);
 
   /* start oscP5, listening for incoming messages at port 12000 */
-  oscP5 = new OscP5(this,12001);
+  oscP5 = new OscP5(this, 12001);
 
   // List available serial ports.
   println(Serial.list());
@@ -38,7 +38,7 @@ void setup()
   //delay(2000); 
 
 
-  values = new float[6];
+  values = new float[14];
 
   values[0] = 0.0;
   values[1] = 0.0;
@@ -46,6 +46,13 @@ void setup()
   values[3] = 0.0;
   values[4] = 0.0;
   values[5] = 0.0;
+  values[6] = 0.0;
+  values[7] = 0.0;
+  values[8] = 0.0;
+  values[9] = 0.0;
+  values[10] = 0.0;
+  values[11] = 0.0;
+
 
   myRemoteLocation = new NetAddress("127.0.0.1", 12000);
 }
@@ -67,9 +74,9 @@ void draw() {
 
   background(40, 40, 60);
 
-  yaw = values[0];
-  pitch = values[1];
-  roll = values[2];
+  yaw = values[9];
+  pitch = values[10];
+  roll = values[11];
 
   textSize(16);
 
@@ -96,7 +103,7 @@ void draw() {
   for (int  i = 0; i < sizeZ; i++ ) {
 
     for (int j = 0; j < sizeX; j ++ ) {
-
+ 
 
       float xPos = (j - sizeX/2 ) * cubeSize + cubeSize/2 + ( j - (sizeX/2 - 1) ) * gap ;
       float zPos = (i - sizeZ/2) * cubeSize + cubeSize/2 + + ( i - (sizeZ/2 - 1) ) * gap;
@@ -116,26 +123,37 @@ void serialEvent(Serial myPort) {
 
   //input = myPort.readString();   
   input = myPort.readStringUntil('\n');
-  //
+  // 's', mx, my, mz, ax,ay, az, gx, gy, gz, yaw, pitch, roll, 'e'
+  
   //println(numbers);
   if (input != null) {
 
     //println(input);
     numbers = splitTokens(input, " ");
+    //println(numbers);
+    //println(numbers.length);
+    //println(numbers[0]);
+    //println(numbers[numbers.length-2]);
 
-    if (numbers.length == 6) {
-      values[0] = float(numbers[0]);
-      values[1] = float(numbers[1]);
-      values[2] = float(numbers[2]);
-      values[3] = float(numbers[3]);
-      values[4] = float(numbers[4]);
-      values[5] = float(numbers[5]);
+    if (numbers.length == 15) {
+      values[0] = float(numbers[1]);
+      values[1] = float(numbers[2]);
+      values[2] = float(numbers[3]);
+      values[3] = float(numbers[4]);
+      values[4] = float(numbers[5]);
+      values[5] = float(numbers[6]);
+      values[6] = float(numbers[7]);
+      values[7] = float(numbers[8]);
+      values[8] = float(numbers[9]);
+      values[9] = float(numbers[10]);
+      values[10] = float(numbers[11]);
+      values[11] = float(numbers[12]);
 
       //println("yaw: " + values[0]);
       //println("pitch: " + values[1]);
       //println("roll: " + values[2]);
 
-      sendOSC(values[3], values[4], values[5]);
+      sendOSC(values[0], values[1], values[2]); // mx, my, mz
     } else {
       println(input);
     }
