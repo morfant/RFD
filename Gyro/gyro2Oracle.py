@@ -7,9 +7,11 @@ import sys
 
 def main():
     if len(sys.argv) < 3:
-        # HOST = "121.162.9.196"
-        HOST = "13.125.21.41"
-        PORT = 9902
+        # HOST = "13.125.21.41"
+        # HOST = "192.168.0.3"
+        HOST = "localhost"
+        # PORT = 9901
+        PORT = 9000
         print("Use default setting. {0}:{1}".format(HOST, PORT))
         # HOST = "132.145.113.171"
     else:
@@ -33,6 +35,7 @@ def main():
 
     # serial
     # ser = serial.Serial('/dev/cu.usbmodem14601', 38400)
+    # ser = serial.Serial('/dev/ttyACM0', 38400)
     ser = serial.Serial('COM15', 38400)
     time.sleep(1)
     # print(ser)
@@ -43,7 +46,16 @@ def main():
     y_values = [0, 0, 0]
     q_values = [0, 0, 0, 0]
 
-    '''
+    prev_value = [
+            0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0, 0,
+            0
+            ]
+
     while True:
 
         # Get sensor values from arduino
@@ -61,26 +73,38 @@ def main():
         # print("4 - ")
         # print(v)
         if len(v) == 18 and v[0] == 's' and v[-1] == 'e':
-            m_values[0] = float(v[1])
-            m_values[1] = float(v[2])
-            m_values[2] = float(v[3])
 
-            a_values[0] = float(v[4])
-            a_values[1] = float(v[5])
-            a_values[2] = float(v[6])
+            for i in range(1, len(v)-1):
+                if v[i] is not ' ':
+                    prev_value[i] = v[i]
+                    # print(i)
+                else:
+                    print("Data has space..")
+                    print(v[i])
+                    v[i] = prev_value[i]
 
-            g_values[0] = float(v[7])
-            g_values[1] = float(v[8])
-            g_values[2] = float(v[9])
+            for i in range(1, len(v)-1):
+                print(v[i])
 
-            y_values[0] = float(v[10])
-            y_values[1] = float(v[11])
-            y_values[2] = float(v[12])
-
-            q_values[0] = float(v[13])
-            q_values[1] = float(v[14])
-            q_values[2] = float(v[15])
-            q_values[3] = float(v[16])
+            try:
+                m_values[0] = float(v[1])
+                m_values[1] = float(v[2])
+                m_values[2] = float(v[3])
+                a_values[0] = float(v[4])
+                a_values[1] = float(v[5])
+                a_values[2] = float(v[6])
+                g_values[0] = float(v[7])
+                g_values[1] = float(v[8])
+                g_values[2] = float(v[9])
+                y_values[0] = float(v[10])
+                y_values[1] = float(v[11])
+                y_values[2] = float(v[12])
+                q_values[0] = float(v[13])
+                q_values[1] = float(v[14])
+                q_values[2] = float(v[15])
+                q_values[3] = float(v[16])
+            except:
+                print("error")
 
             # print(m_values)
             # print(a_values)
@@ -132,15 +156,16 @@ def main():
             msg = "{0},{1},{2},{3},{4},{5}".format(time_stamp, mag, acc, gyro, ypr, qert) # yrp = yaw, pitch, roll
             # print("5 - ")
             print(msg.encode())
+            # MASTER_SOCK.sendall(msg.encode())
 
             try:
-                # print("send..")
+                # print(msg)
                 MASTER_SOCK.sendall(msg.encode())
             except socket.error as msg:
                 # print(socket.error)
-                print(msg)
-            finally:
-                MASTER_SOCK.close()
+                print(' ')
+            # finally:
+                # MASTER_SOCK.close()
 
             i = i + 1
             print(i)
@@ -148,7 +173,7 @@ def main():
         else:
             if len(v) != 18:
                 print("len is not 18")
-                # print(v)
+                print(len(v))
                 continue
             elif v[0] != 's':
                 print("start byte is not \'s\'!!")
@@ -156,7 +181,7 @@ def main():
             elif v[-1] != 'e':
                 print("end byte is not \'e\'!!")
                 continue
-        '''
+        time.sleep(0.05)
 
 
 
