@@ -2,11 +2,11 @@ import processing.serial.*;
 
 Serial myPort; // Create object from Serial class
 
-//import oscP5.*;
-//import netP5.*;
+import oscP5.*;
+import netP5.*;
 
-//OscP5 oscP5;
-//NetAddress myRemoteLocation;
+OscP5 oscP5;
+NetAddress myRemoteLocation;
 
 float mx;
 float my;
@@ -20,8 +20,6 @@ int sizeZ = 8;
 int cubeSize = 50;
 float gap = 3;
 
-boolean CALIBRATION = true;
-
 
 void setup()
 {
@@ -32,28 +30,24 @@ void setup()
 
 
   // List available serial ports.
-  println(Serial.list());
-
-  if (CALIBRATION) {
-    String portName = Serial.list()[1];
-    myPort = new Serial(this, portName, 38400);
-    delay(2000);
-  } else {
-    /* start oscP5, listening for incoming messages at port 12000 */
-    //oscP5 = new OscP5(this, 12000);
-  }
-
-  //String portName = Serial.list()[1];
-  //myPort = new Serial(this, portName, 38400);
-  //myPort.bufferUntil('\n');
-  //delay(2000); 
+  //println(Serial.list());
 
 
-  values = new float[3];
+  String portName = Serial.list()[1];
+  myPort = new Serial(this, portName, 38400);
+  delay(2000);
 
-  values[0] = 0.0;
-  values[1] = 0.0;
-  values[2] = 0.0;
+  /* start oscP5, listening for incoming messages at port 12000 */
+  oscP5 = new OscP5(this, 12000);
+
+
+
+  //values = new float[3];
+
+  //values[0] = 0.0;
+  //values[1] = 0.0;
+  //values[2] = 0.0;
+  
 }
 
 
@@ -105,27 +99,26 @@ void serialEvent(Serial myPort) {
 
   //println("SerialEvent()");
   //input = myPort.readString();   
-  
+
   input = myPort.readStringUntil('\n');
   //println(input);
-  
+
   //
   //println(numbers);
   if (input != null) {
+    println(input);
 
-    numbers = splitTokens(input, " ");
-    
+    String[] numbers = splitTokens(input, " ");
+
     if (numbers.length == 3) {
       mx = float(numbers[0]);
       my = float(numbers[1]);
       mz = float(numbers[2]);
-      println("mx: " + mx);
-      println("my: " + my);
-      println("mz: " + mz);
+      //println("mx: " + mx);
+      //println("my: " + my);
+      //println("mz: " + mz);
     }
-
   }
-
 }
 
 void keyPressed() {
@@ -136,20 +129,20 @@ void keyPressed() {
 
 
 
-//void oscEvent(OscMessage theOscMessage) {
-//  /* check if theOscMessage has the address pattern we are looking for. */
+void oscEvent(OscMessage theOscMessage) {
+  /* check if theOscMessage has the address pattern we are looking for. */
 
-//  if (theOscMessage.checkAddrPattern("/mag")==true) {
-//    /* check if the typetag is the right one. */
-//    if (theOscMessage.checkTypetag("fff")) {
-//      /* parse theOscMessage and extract the values from the osc message arguments. */
-//      values[0] = theOscMessage.get(0).floatValue();  
-//      values[1] = theOscMessage.get(1).floatValue();
-//      values[2] = theOscMessage.get(2).floatValue();
-//      //print("### received an osc message /test with typetag ifs.");
-//      //println(" values: "+firstValue+", "+secondValue+", "+thirdValue);
-//      return;
-//    }
-//  } 
-//  println("### received an osc message. with address pattern "+theOscMessage.addrPattern());
-//}
+  if (theOscMessage.checkAddrPattern("/mag")==true) {
+    /* check if the typetag is the right one. */
+    if (theOscMessage.checkTypetag("fff")) {
+      /* parse theOscMessage and extract the values from the osc message arguments. */
+      mx = theOscMessage.get(0).floatValue();  
+      my = theOscMessage.get(1).floatValue();
+      mz = theOscMessage.get(2).floatValue();
+      //print("### received an osc message /test with typetag ifs.");
+      //println(" values: "+firstValue+", "+secondValue+", "+thirdValue);
+      return;
+    }
+  } 
+  println("### received an osc message. with address pattern "+theOscMessage.addrPattern());
+}
