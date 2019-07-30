@@ -28,10 +28,10 @@
 #include "src/MPU9250.h"
 
 #define AHRS true // Set to false for basic data read
-#define SerialDebug false // Set to true to get Serial output for debugging
+#define SerialDebug true // Set to true to get Serial output for debugging
 #define magCal false
-#define SerialSending true // Set to true to get Serial output for debugging
-#define MagCalSampleCount 480
+#define SerialSending false  // Set to true to get Serial output for debugging
+#define SampleCount 480
 
 #define test true
 
@@ -171,7 +171,7 @@ void setup()
       // magnetometer calibration with sampleCount for getting mag min/max
       // The next call delays for 4 seconds, and then records about 15 seconds of
       // data to calculate bias and scale.
-      myIMU.magCalMPU9250(myIMU.magBias, myIMU.magScale, MagCalSampleCount);
+      myIMU.magCalMPU9250(myIMU.magBias, myIMU.magScale, SampleCount);
     }
 
     if (SerialDebug)
@@ -406,14 +406,73 @@ void loop()
                                   * *(getQ() + 3)), *getQ() * *getQ() - * (getQ() + 1)
                           * *(getQ() + 1) - * (getQ() + 2) * *(getQ() + 2) + * (getQ() + 3)
                           * *(getQ() + 3));
-      myIMU.pitch *= RAD_TO_DEG;
+      // myIMU.pitch *= RAD_TO_DEG;
       myIMU.yaw   *= RAD_TO_DEG;
 
       // Declination of SparkFun Electronics (40°05'26.6"N 105°11'05.9"W) is
       // 	8° 30' E  ± 0° 21' (or 8.5°) on 2016-07-19
       // - http://www.ngdc.noaa.gov/geomag-web/#declination
-      // myIMU.yaw  += 8.99;
-      myIMU.roll *= RAD_TO_DEG;
+      myIMU.yaw  += 8.99;
+      // myIMU.roll *= RAD_TO_DEG;
+
+      // heading = atan2(myIMU.my, myIMU.mx) * RAD_TO_DEG;
+
+      // float x = -myIMU.gy;
+      // float y = myIMU.gx;
+
+      // float phi = -myIMU.roll;
+      // float theta = myIMU.pitch;
+      // double pitch = atan2 (myIMU.ay ,( sqrt ((myIMU.ax * myIMU.ax) + (myIMU.az * myIMU.az))));
+      // double roll = atan2(-myIMU.ax,( sqrt((myIMU.ay* myIMU.ay) + (myIMU.az* myIMU.az))));
+
+      // double pitch = atan2(myIMU.ax, sqrt(myIMU.ay*myIMU.ay + myIMU.az*myIMU.az));
+      // double roll = atan2(-myIMU.ay, myIMU.az);
+
+      // float Yh = (myIMU.my * cos(roll)) - (myIMU.mz * sin(roll));
+      // float Xh = (myIMU.mx * cos(pitch))+(myIMU.my* sin(roll)*sin(pitch)) + (myIMU.mz* cos(roll) * sin(pitch));
+      // heading = atan2(Yh, Xh);
+
+  //Low Pass Filter
+  float alpha = 0.2;
+  float fax = myIMU.ax * alpha + (fax * (1.0 - alpha));
+  float fay = myIMU.ay * alpha + (fay * (1.0 - alpha));
+  float faz = myIMU.az * alpha + (faz * (1.0 - alpha));
+
+  float accxnorm = fax/sqrt(fax*fax+fay*fay+faz*faz);
+  float accynorm = fay/sqrt(fax*fax+fay*fay+faz*faz);
+
+  // Normalize acceleration measurements so they range from 0 to 1
+  // float accxnorm = myIMU.ax/sqrt(myIMU.ax*myIMU.ax+myIMU.ay*myIMU.ay+myIMU.az*myIMU.az);
+  // float accynorm = myIMU.ay/sqrt(myIMU.ax*myIMU.ax+myIMU.ay*myIMU.ay+myIMU.az*myIMU.az);
+
+  // calculate pitch and roll
+  float pitch = asin(-accxnorm);
+  float roll = asin(accynorm/cos(pitch));
+
+  // tilt compensated magnetic sensor measurements
+  float magxcomp = myIMU.mx*cos(pitch)+myIMU.mz*sin(pitch);
+  float magycomp = myIMU.mx*sin(roll)*sin(pitch)+myIMU.my*cos(roll)-myIMU.mz*sin(roll)*cos(pitch);
+
+  // arctangent of y/x converted to degrees
+  heading = 180*atan2(magycomp,magxcomp)/PI;
+
+
+      // xh = x * cos(myIMU.pitch) * y * sin(myIMU.roll) * sin(myIMU.pitch) - myIMU.mz * cos(myIMU.roll) * sin(myIMU.pitch);
+      // yh = y * cos(-myIMU.roll) + myIMU.mz * sin(myIMU.roll);
+      // heading = atan2(yh, xh) * RAD_TO_DEG;
+      // heading = atan2(-(myIMU.mz * sin(phi) - myIMU.my * cos(phi)), myIMU.mx * cos(theta) + myIMU.my * sin(theta) * sin(phi) + myIMU.mz * sin(theta) * cos(phi));
+      // heading *= RAD_TO_DEG;
+      pitch *= RAD_TO_DEG;
+      roll *= RAD_TO_DEG;
+
+      if (test) {
+        Serial.print(pitch);
+        Serial.print(" ");
+        Serial.print(roll);
+        Serial.print(" ");
+        Serial.println(heading);
+
+      }
 
       if (SerialSending)
       {
@@ -478,6 +537,4 @@ void loop()
       myIMU.sum = 0;
     } // if (myIMU.delt_t > 500)
   } // if (AHRS)
-
-  delay(30);
 }

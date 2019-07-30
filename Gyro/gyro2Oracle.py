@@ -9,7 +9,7 @@ def main():
     if len(sys.argv) < 3:
         # HOST = "13.125.21.41"
         # HOST = "192.168.0.3"
-        HOST = "localhost"
+        HOST = "127.0.0.1"
         # PORT = 9901
         PORT = 9000
         print("Use default setting. {0}:{1}".format(HOST, PORT))
@@ -18,25 +18,27 @@ def main():
         HOST = sys.argv[1]
         PORT = int(sys.argv[2])
 
-    MASTER_SOCK = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # MASTER_SOCK = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
+    MASTER_SOCK = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
     MASTER_SOCK.settimeout(200)
 
+    # only for TCP
     # connect to remote host
-    try:
-        MASTER_SOCK.connect((HOST, PORT))
-    except Exception as msg:
-        print(type(msg).__name__)
-        print("Unable to connect")
-        sys.exit()
+    # try:
+    #     MASTER_SOCK.connect((HOST, PORT))
+    # except Exception as msg:
+    #     print(type(msg).__name__)
+    #     print("Unable to connect")
+    #     sys.exit()
 
     print("Connected to remote host. Start sending messages")
 
     i = 0
 
     # serial
-    # ser = serial.Serial('/dev/cu.usbmodem14601', 38400)
+    ser = serial.Serial('/dev/cu.usbmodem14601', 38400)
     # ser = serial.Serial('/dev/ttyACM0', 38400)
-    ser = serial.Serial('COM15', 38400)
+    # ser = serial.Serial('COM15', 38400)
     time.sleep(1)
     # print(ser)
 
@@ -79,7 +81,7 @@ def main():
                     prev_value[i] = v[i]
                     # print(i)
                 else:
-                    print("Data has space..")
+                    print("Data has space.. or someting error")
                     print(v[i])
                     v[i] = prev_value[i]
 
@@ -113,7 +115,12 @@ def main():
 
             # Display the translation and timestamp
             # print("Time stamp: {0}\n".format(time_stamp))
-            time_stamp = float(time.time())
+            time_stamp_dot = time.time()
+            time_stamp_str = str(time_stamp_dot)
+            time_stamp = time_stamp_str.replace('.', '');
+
+            # print(time_stamp)
+
 
             #Display mag values
             mx = (m_values[0])
@@ -156,19 +163,16 @@ def main():
             msg = "{0},{1},{2},{3},{4},{5}".format(time_stamp, mag, acc, gyro, ypr, qert) # yrp = yaw, pitch, roll
             # print("5 - ")
             print(msg.encode())
-            # MASTER_SOCK.sendall(msg.encode())
 
             try:
-                # print(msg)
-                MASTER_SOCK.sendall(msg.encode())
+                print(msg)
+                # MASTER_SOCK.sendall(msg.encode()) # TCP
+                MASTER_SOCK.sendto(msg.encode(), (HOST, PORT)) # UDP
             except socket.error as msg:
-                # print(socket.error)
-                print(' ')
-            # finally:
-                # MASTER_SOCK.close()
+                print(msg)
 
-            i = i + 1
-            print(i)
+            # i = i + 1
+            # print(i)
 
         else:
             if len(v) != 18:
