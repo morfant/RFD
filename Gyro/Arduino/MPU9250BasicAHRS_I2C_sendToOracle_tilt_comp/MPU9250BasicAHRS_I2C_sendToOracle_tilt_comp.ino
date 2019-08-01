@@ -412,7 +412,7 @@ void loop()
       // Declination of SparkFun Electronics (40°05'26.6"N 105°11'05.9"W) is
       // 	8° 30' E  ± 0° 21' (or 8.5°) on 2016-07-19
       // - http://www.ngdc.noaa.gov/geomag-web/#declination
-      myIMU.yaw  += 8.99;
+      // myIMU.yaw  += 8.99;
       // myIMU.roll *= RAD_TO_DEG;
 
       // heading = atan2(myIMU.my, myIMU.mx) * RAD_TO_DEG;
@@ -433,28 +433,31 @@ void loop()
       // heading = atan2(Yh, Xh);
 
   //Low Pass Filter
-  float alpha = 0.2;
-  float fax = myIMU.ax * alpha + (fax * (1.0 - alpha));
-  float fay = myIMU.ay * alpha + (fay * (1.0 - alpha));
-  float faz = myIMU.az * alpha + (faz * (1.0 - alpha));
+  // float alpha = 0.2;
+  // float fax = myIMU.ax * alpha + (fax * (1.0 - alpha));
+  // float fay = myIMU.ay * alpha + (fay * (1.0 - alpha));
+  // float faz = myIMU.az * alpha + (faz * (1.0 - alpha));
 
-  float accxnorm = fax/sqrt(fax*fax+fay*fay+faz*faz);
-  float accynorm = fay/sqrt(fax*fax+fay*fay+faz*faz);
+  // float accxnorm = fax/sqrt(fax*fax+fay*fay+faz*faz);
+  // float accynorm = fay/sqrt(fax*fax+fay*fay+faz*faz);
 
   // Normalize acceleration measurements so they range from 0 to 1
   // float accxnorm = myIMU.ax/sqrt(myIMU.ax*myIMU.ax+myIMU.ay*myIMU.ay+myIMU.az*myIMU.az);
   // float accynorm = myIMU.ay/sqrt(myIMU.ax*myIMU.ax+myIMU.ay*myIMU.ay+myIMU.az*myIMU.az);
 
   // calculate pitch and roll
-  float pitch = asin(-accxnorm);
-  float roll = asin(accynorm/cos(pitch));
+  // float pitch = asin(-accxnorm);
+  // float roll = asin(accynorm/cos(pitch));
+
+  // float magxcomp = myIMU.mx*cos(pitch)+myIMU.mz*sin(pitch);
+  // float magycomp = myIMU.mx*sin(roll)*sin(pitch)+myIMU.my*cos(roll)-myIMU.mz*sin(roll)*cos(pitch);
 
   // tilt compensated magnetic sensor measurements
-  float magxcomp = myIMU.mx*cos(pitch)+myIMU.mz*sin(pitch);
-  float magycomp = myIMU.mx*sin(roll)*sin(pitch)+myIMU.my*cos(roll)-myIMU.mz*sin(roll)*cos(pitch);
+  // float magxcomp = myIMU.mx*cos(myIMU.pitch)+myIMU.mz*sin(myIMU.pitch);
+  // float magycomp = myIMU.mx*sin(myIMU.roll)*sin(myIMU.pitch)+myIMU.my*cos(myIMU.roll)-myIMU.mz*sin(myIMU.roll)*cos(myIMU.pitch);
 
   // arctangent of y/x converted to degrees
-  heading = 180*atan2(magycomp,magxcomp)/PI;
+  // heading = atan2(magycomp,magxcomp);
 
 
       // xh = x * cos(myIMU.pitch) * y * sin(myIMU.roll) * sin(myIMU.pitch) - myIMU.mz * cos(myIMU.roll) * sin(myIMU.pitch);
@@ -462,8 +465,43 @@ void loop()
       // heading = atan2(yh, xh) * RAD_TO_DEG;
       // heading = atan2(-(myIMU.mz * sin(phi) - myIMU.my * cos(phi)), myIMU.mx * cos(theta) + myIMU.my * sin(theta) * sin(phi) + myIMU.mz * sin(theta) * cos(phi));
       // heading *= RAD_TO_DEG;
+      // pitch *= RAD_TO_DEG;
+      // roll *= RAD_TO_DEG;
+
+
+      // double pitch = atan2(myIMU.ax, sqrt(myIMU.ay*myIMU.ay + myIMU.az*myIMU.az));
+      // double roll = atan2(-myIMU.ay, myIMU.az);
+
+
+  //  float pitch = atan2 (accelY ,( sqrt ((accelX * accelX) + (accelZ * accelZ))));
+  //  float roll = atan2(-accelX ,( sqrt((accelY * accelY) + (accelZ * accelZ))));
+      double pitch = atan2 (myIMU.ay ,( sqrt ((myIMU.ax * myIMU.ax) + (myIMU.az * myIMU.az))));
+      double roll = atan2(-myIMU.ax,( sqrt((myIMU.ay* myIMU.ay) + (myIMU.az* myIMU.az))));
+ 
+
+   // yaw from mag
+
+  //  float Yh = (magY * cos(roll)) - (magZ * sin(roll));
+  //  float Xh = (magX * cos(pitch))+(magY * sin(roll)*sin(pitch)) + (magZ * cos(roll) * sin(pitch));
+      // float Yh = (myIMU.my * cos(roll)) - (myIMU.mz * sin(roll));
+      // float Xh = (myIMU.mx * cos(pitch))+(myIMU.my* sin(roll)*sin(pitch)) + (myIMU.mz* cos(roll) * sin(pitch));
+
+
+// Xh = X*cos(φ) + Y*sin(θ)*sin(φ) - Z*cos(θ)*sin(φ)
+// Yh = Y*cos(θ) + Z*sin(θ)
+
+    float Yh = myIMU.my*cos(pitch) + myIMU.mz*sin(pitch);
+    float Xh = myIMU.mx*cos(pitch) + myIMU.my*sin(roll)*sin(pitch) - myIMU.mz*cos(pitch)*sin(roll);
+
+
+   heading =  atan2(Yh, Xh);
+
+
+
+
       pitch *= RAD_TO_DEG;
       roll *= RAD_TO_DEG;
+      heading *= RAD_TO_DEG;
 
       if (test) {
         Serial.print(pitch);

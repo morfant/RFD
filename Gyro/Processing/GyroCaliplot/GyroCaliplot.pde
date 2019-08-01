@@ -135,7 +135,7 @@ void serialEvent(Serial myPort) {
     //println(numbers[0]);
     //println(numbers[numbers.length-2]);
 
-    if (numbers.length == 15) {
+    if (numbers.length >= 15) {
       values[0] = float(numbers[1]);
       values[1] = float(numbers[2]);
       values[2] = float(numbers[3]);

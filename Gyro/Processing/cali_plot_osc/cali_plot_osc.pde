@@ -42,9 +42,9 @@ void setup()
   //println(Serial.list());
 
 
-  String portName = Serial.list()[1];
-  myPort = new Serial(this, portName, 38400);
-  delay(2000);
+  //String portName = Serial.list()[1];
+  //myPort = new Serial(this, portName, 38400);
+  //delay(2000);
 
   /* start oscP5, listening for incoming messages at port 12000 */
   oscP5 = new OscP5(this, 12000);
@@ -166,6 +166,7 @@ void serialEvent(Serial myPort) {
 
     String[] numbers = splitTokens(input, " ");
 
+    println(numbers.length);
     if (numbers.length == 3) {
       mx = float(numbers[0]);
       my = float(numbers[1]);
@@ -173,7 +174,7 @@ void serialEvent(Serial myPort) {
       println("mx: " + mx);
       println("my: " + my);
       println("mz: " + mz);
-    } else if (numbers.length == 6) {
+    } else if (numbers.length >= 6) {
       mx = float(numbers[0]);
       my = float(numbers[1]);
       mz = float(numbers[2]);

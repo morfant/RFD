@@ -223,9 +223,9 @@ void loop()
 
     // Now we'll calculate the accleration value into actual g's
     // This depends on scale being set
-    myIMU.ax = (float)myIMU.accelCount[0] * myIMU.aRes; // - myIMU.accelBias[0];
-    myIMU.ay = (float)myIMU.accelCount[1] * myIMU.aRes; // - myIMU.accelBias[1];
-    myIMU.az = (float)myIMU.accelCount[2] * myIMU.aRes; // - myIMU.accelBias[2];
+    myIMU.ax = (float)myIMU.accelCount[0] * myIMU.aRes - myIMU.accelBias[0];
+    myIMU.ay = (float)myIMU.accelCount[1] * myIMU.aRes - myIMU.accelBias[1];
+    myIMU.az = (float)myIMU.accelCount[2] * myIMU.aRes - myIMU.accelBias[2];
 
     myIMU.readGyroData(myIMU.gyroCount);  // Read the x/y/z adc values
 
@@ -258,13 +258,26 @@ void loop()
       // myIMU.magBias[2] = -373.68 * myIMU.magScale[2];  // User environmental x-axis correction in milliGauss
 
 
-      myIMU.magScale[0] = 1.00;
-      myIMU.magScale[1] = 1.00;
-      myIMU.magScale[2] = 1.00;
+//      myIMU.magScale[0] = 1.00;
+//      myIMU.magScale[1] = 1.00;
+//      myIMU.magScale[2] = 1.00;
+//
+//      myIMU.magBias[0] = 316.97 * myIMU.magScale[0];  // User environmental x-axis correction in milliGauss, should be automatically calculated
+//      myIMU.magBias[1] = +24.85 * myIMU.magScale[1];  // User environmental x-axis correction in milliGauss
+//      myIMU.magBias[2] = -276.86 * myIMU.magScale[2];  // User environmental x-axis correction in milliGauss
 
-      myIMU.magBias[0] = 316.97 * myIMU.magScale[0];  // User environmental x-axis correction in milliGauss, should be automatically calculated
-      myIMU.magBias[1] = +24.85 * myIMU.magScale[1];  // User environmental x-axis correction in milliGauss
-      myIMU.magBias[2] = -276.86 * myIMU.magScale[2];  // User environmental x-axis correction in milliGauss
+
+      myIMU.magScale[0] = 0.97;
+      myIMU.magScale[1] = 1.01;
+      myIMU.magScale[2] = 1.02;
+
+      myIMU.magBias[0] = 199.64 * myIMU.magScale[0];  // User environmental x-axis correction in milliGauss, should be automatically calculated
+      myIMU.magBias[1] = 1.77 * myIMU.magScale[1];  // User environmental x-axis correction in milliGauss
+      myIMU.magBias[2] = -164.76 * myIMU.magScale[2];  // User environmental x-axis correction in milliGauss
+
+
+      
+      
 
 
 

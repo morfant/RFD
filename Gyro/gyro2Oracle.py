@@ -9,27 +9,28 @@ def main():
     if len(sys.argv) < 3:
         # HOST = "13.125.21.41"
         # HOST = "192.168.0.3"
-        HOST = "127.0.0.1"
-        # PORT = 9901
-        PORT = 9000
+        # HOST = "127.0.0.1"
+        HOST = "121.162.9.196"
+        PORT = 9902
+        # PORT = 9000
         print("Use default setting. {0}:{1}".format(HOST, PORT))
         # HOST = "132.145.113.171"
     else:
         HOST = sys.argv[1]
         PORT = int(sys.argv[2])
 
-    # MASTER_SOCK = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
-    MASTER_SOCK = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+    MASTER_SOCK = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
     MASTER_SOCK.settimeout(200)
+    # MASTER_SOCK = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 
     # only for TCP
     # connect to remote host
-    # try:
-    #     MASTER_SOCK.connect((HOST, PORT))
-    # except Exception as msg:
-    #     print(type(msg).__name__)
-    #     print("Unable to connect")
-    #     sys.exit()
+    try:
+        MASTER_SOCK.connect((HOST, PORT))
+    except Exception as msg:
+        print(type(msg).__name__)
+        print("Unable to connect")
+        sys.exit()
 
     print("Connected to remote host. Start sending messages")
 
@@ -162,12 +163,12 @@ def main():
 
             msg = "{0},{1},{2},{3},{4},{5}".format(time_stamp, mag, acc, gyro, ypr, qert) # yrp = yaw, pitch, roll
             # print("5 - ")
-            print(msg.encode())
+            # print(msg.encode())
 
             try:
                 print(msg)
-                # MASTER_SOCK.sendall(msg.encode()) # TCP
-                MASTER_SOCK.sendto(msg.encode(), (HOST, PORT)) # UDP
+                MASTER_SOCK.sendall(msg.encode()) # TCP
+                # MASTER_SOCK.sendto(msg.encode(), (HOST, PORT)) # UDP
             except socket.error as msg:
                 print(msg)
 
