@@ -6,6 +6,7 @@ Serial myPort; // Create object from Serial class
 float pitch;
 float roll;
 float heading;
+float cali_Gyro, cali_Acc, cali_Mag;
 
 String input;
 
@@ -43,6 +44,11 @@ void draw() {
   text("pitch: " + (pitch), 50, height/12);
   text("roll: " + (roll), 150, height/12);
   text("heading: " + (heading), 250, height/12);
+
+  // calibration status
+  text("cali_Gyro: " + (cali_Gyro), 400, height/12);
+  text("cali_Acc: " + (cali_Acc), 550, height/12);
+  text("cali_Mag: " + (cali_Mag), 700, height/12);
 
 
   pushMatrix();
@@ -100,20 +106,27 @@ void serialEvent(Serial myPort) {
 
   if (input != null) {
     String[] numbers = splitTokens(input, " ");  
+    //println(numbers);
+    //println(numbers.length);
 
-    if (numbers.length == 3) {
+    if (numbers.length == 19) {
+      if (numbers[0].equals("s") && numbers[numbers.length - 2].equals("e")) {
 
-      pitch = float(numbers)[0];
-      roll = float(numbers)[1];
-      heading = float(numbers)[2];
+        heading = float(numbers)[10];
+        roll = float(numbers)[11];
+        pitch = float(numbers)[12];
+
+        //cali_Gyro = float(numbers)[3];
+        //cali_Acc = float(numbers)[4];
+        //cali_Mag = float(numbers)[5];
 
 
-      if (buffer.size() > 900) {
-        buffer.remove(0);
+        if (buffer.size() > 900) {
+          buffer.remove(0);
+        }
+
+        buffer.append(heading);
       }
-
-      buffer.append(heading);
     }
   }
-  
 }
