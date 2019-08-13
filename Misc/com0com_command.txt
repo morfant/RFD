@@ -1,0 +1,12 @@
+ 1. With the com0com's Setup Command Prompt create COM5<->CNCB0 and
+     COM6<->CNCB1 virtual COM port pairs (see com0com's ReadMe.txt for
+     more info). For example:
+
+       setup.exe
+       
+       command> install 0 PortName=COM5 -
+       command> install 1 PortName=COM6 -
+
+  2. Start the hub4com.exe on COM1, CNCB0 and CNCB1 ports:
+
+       hub4com \\.\COM1 \\.\CNCB0 \\.\CNCB1
