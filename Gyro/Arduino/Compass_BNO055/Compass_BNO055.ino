@@ -28,8 +28,8 @@
 */
 
 /* Set the delay between fresh samples */
-#define FPS 60
-#define BNO055_SAMPLERATE_DELAY_MS (1000/FPS)
+#define FPS 100
+#define BNO055_SAMPLERATE_DELAY_MS 1
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
 
