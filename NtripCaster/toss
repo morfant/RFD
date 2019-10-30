@@ -1,0 +1,3 @@
+echo "Start passing through solution from rover(as TCP server) to Control center(as TCP server).."
+
+str2str -in tcpsvr://:10000 -out tcpsvr://:10001

@@ -1,0 +1,3 @@
+echo "Start | TCP in --> NTRIPCASTER out | server program.."
+
+str2str -in tcpsvr://:9000#rtcm3 -out ntripc_c://guest:1234@:9001/WELCOME#rtcm3 -msg "1005, 1074, 1084, 1094, 1124, 1230"
