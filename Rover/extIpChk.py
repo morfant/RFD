@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 import time
 
-path = './log/'
+path = "C:\\Users\\LattePanda\\RFD\\Rover\\log"
 ext = '.log'
 
 now = datetime.now()
@@ -16,16 +16,17 @@ s = now.second
 
 date = str(y) + "_" + str(m) + "_" + str(d) + "_" + str(h) + ":" + str(M) + ":" + str(s)
 
-filename =  path + "extIp_" + date + ext
 
-cmd_0 = 'echo "-----" >> ' + filename
-cmd_1 = 'curl -s icanhazip.com >> ' + filename
-cmd_2 = 'date +"%T" >> ' + filename
-cmd_3 = 'echo "-----\n" >> ' + filename
+filename = "extIp_" + date + ext
+# print(filename)
+cmd_0 = "echo >> test.txt"
+cmd_1 = 'curl -s icanhazip.com >> test.txt'
+cmd_2 = 'date +"%T" >> test.txt'
+cmd_3 = 'echo "-----\n" >> test.txt'
 
 while True:
     os.system(cmd_0)
     os.system(cmd_1)
-    os.system(cmd_2)
-    os.system(cmd_3)
+    # os.system(cmd_2)
+    # os.system(cmd_3)
     time.sleep(10)
